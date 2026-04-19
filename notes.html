@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Notes — Yuvraaj®</title>
+  <meta name="description" content="Writing and notes by Yuvraaj." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200..900;1,9..144,200..900&family=Inter:wght@300..500&family=JetBrains+Mono:wght@300..500&display=swap" rel="stylesheet" />
+
+  <style>
+:root {
+  --bg: #0a0a0a;
+  --bg-2: #0f0f0e;
+  --fg: #ede8df;
+  --fg-2: #a8a297;
+  --fg-3: #6b665d;
+  --fg-4: #3d3a35;
+  --line: #1e1d1a;
+  --line-2: #2a2825;
+  --accent: oklch(0.78 0.14 75);
+  --ff-display: "Fraunces", "Times New Roman", serif;
+  --ff-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --ff-mono: "JetBrains Mono", ui-monospace, monospace;
+  --pad-x: clamp(20px, 6vw, 96px);
+  --content-w: 680px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--ff-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  cursor: none;
+}
+@media (max-width: 900px) { body { cursor: auto; } }
+a { color: inherit; text-decoration: none; cursor: none; }
+::selection { background: var(--accent); color: var(--bg); }
+
+/* grain */
+.grain {
+  position: fixed; inset: 0; z-index: 9998; pointer-events: none;
+  opacity: 0.06; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* cursor */
+.cursor {
+  position: fixed; top: 0; left: 0; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--fg); pointer-events: none; z-index: 10000;
+  transform: translate3d(-50%,-50%,0);
+  transition: width .25s cubic-bezier(.2,.8,.2,1), height .25s cubic-bezier(.2,.8,.2,1), background .2s, border-radius .25s;
+  mix-blend-mode: difference;
+}
+.cursor.hover { width: 44px; height: 44px; background: transparent; border: 1px solid var(--fg); }
+.cursor.text { width: 3px; height: 22px; border-radius: 2px; }
+@media (max-width: 900px) { .cursor { display: none; } }
+
+/* ─── site nav ─── */
+.site-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 22px var(--pad-x);
+  display: flex; justify-content: space-between; align-items: center;
+  mix-blend-mode: difference; color: #fff;
+}
+.site-nav a {
+  font-family: var(--ff-display); font-size: 17px; font-weight: 500; letter-spacing: -0.01em;
+  display: flex; align-items: baseline; gap: 4px;
+}
+.site-nav .reg { font-family: var(--ff-sans); font-size: 9px; vertical-align: super; opacity: .7; font-weight: 400; }
+.nav-back {
+  font-family: var(--ff-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  opacity: .7; display: flex; align-items: center; gap: 8px; transition: opacity .2s;
+}
+.nav-back:hover { opacity: 1; }
+.nav-back .arr { display: inline-block; transition: transform .25s cubic-bezier(.2,.8,.2,1); }
+.nav-back:hover .arr { transform: translateX(-4px); }
+
+/* ─── header ─── */
+.notes-header {
+  padding: 160px var(--pad-x) 72px;
+  border-bottom: 1px solid var(--line);
+  max-width: calc(var(--content-w) + var(--pad-x) * 2);
+}
+.notes-eyebrow {
+  font-family: var(--ff-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--fg-3); margin-bottom: 24px; display: flex; gap: 14px; align-items: center;
+}
+.notes-eyebrow .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); display: inline-block; }
+.notes-title {
+  font-family: var(--ff-display); font-weight: 400; font-style: italic;
+  font-size: clamp(52px, 9vw, 128px); line-height: 0.92; letter-spacing: -0.04em;
+  margin: 0 0 28px; color: var(--fg);
+}
+.notes-subtitle {
+  font-size: 17px; line-height: 1.55; color: var(--fg-2); max-width: 44ch;
+}
+.notes-subtitle em { color: var(--fg); font-style: italic; }
+
+/* ─── index ─── */
+.notes-index {
+  padding: 0 var(--pad-x);
+  max-width: calc(var(--content-w) + var(--pad-x) * 2);
+  margin: 0 auto 0 0;
+}
+.index-year-group { margin-top: 0; }
+.index-year {
+  font-family: var(--ff-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--fg-4); padding: 40px 0 16px;
+  border-bottom: 1px solid var(--fg-4);
+  display: flex; gap: 12px; align-items: center;
+}
+.index-year .yr-count { color: var(--fg-3); }
+
+.note-entry {
+  display: grid;
+  grid-template-columns: 72px 1fr 80px;
+  gap: 0 28px;
+  align-items: baseline;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+  cursor: none;
+  position: relative;
+  transition: padding-left .3s cubic-bezier(.2,.8,.2,1);
+}
+.note-entry:hover { padding-left: 12px; }
+.note-entry .ne-date { font-family: var(--ff-mono); font-size: 10px; color: var(--fg-3); letter-spacing: 0.04em; padding-top: 3px; }
+.note-entry .ne-body { }
+.note-entry .ne-title {
+  font-family: var(--ff-display); font-size: clamp(18px, 2vw, 24px);
+  font-weight: 300; letter-spacing: -0.02em; line-height: 1.2; color: var(--fg);
+  transition: color .2s;
+}
+.note-entry .ne-title em { font-style: italic; }
+.note-entry:hover .ne-title { color: var(--accent); }
+.note-entry .ne-blurb { font-size: 13px; color: var(--fg-3); margin-top: 4px; line-height: 1.4; }
+.note-entry .ne-tag {
+  font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--fg-4); text-align: right; padding-top: 4px;
+}
+.note-entry:hover .ne-tag { color: var(--fg-3); }
+
+@media (max-width: 640px) {
+  .note-entry { grid-template-columns: 1fr; gap: 4px; }
+  .ne-tag { display: none; }
+}
+
+/* ─── featured / pinned post ─── */
+.notes-featured {
+  padding: 48px var(--pad-x) 0;
+  max-width: calc(var(--content-w) + var(--pad-x) * 2);
+}
+.featured-label {
+  font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--fg-3); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+}
+.featured-label::after { content: ""; flex: 1; height: 1px; background: var(--line-2); }
+.featured-card {
+  border: 1px solid var(--line-2); padding: 36px;
+  background: var(--bg-2);
+  position: relative; overflow: hidden;
+  transition: border-color .35s;
+}
+.featured-card:hover { border-color: var(--accent); }
+.featured-card .fc-tag {
+  font-family: var(--ff-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--fg-3); margin-bottom: 20px;
+}
+.featured-card .fc-title {
+  font-family: var(--ff-display); font-weight: 300;
+  font-size: clamp(24px, 3.5vw, 42px); line-height: 1.1; letter-spacing: -0.025em;
+  color: var(--fg); margin: 0 0 16px;
+}
+.featured-card .fc-title em { font-style: italic; }
+.featured-card .fc-excerpt {
+  font-size: 16px; line-height: 1.6; color: var(--fg-2); max-width: 52ch;
+}
+.featured-card .fc-excerpt em { color: var(--fg); font-style: italic; }
+.featured-card .fc-foot {
+  margin-top: 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--ff-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--fg-3);
+}
+.featured-card .fc-read {
+  display: flex; align-items: center; gap: 10px; color: var(--fg-2);
+  transition: color .25s, gap .25s;
+}
+.featured-card:hover .fc-read { color: var(--accent); gap: 14px; }
+.featured-card .fc-read .arr { display: inline-block; }
+
+/* ─── post view ─── */
+.post-view {
+  display: none;
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--bg);
+  overflow-y: auto;
+  opacity: 0; pointer-events: none;
+  transition: opacity .5s cubic-bezier(.7,0,.3,1);
+}
+.post-view.open { display: block; opacity: 1; pointer-events: auto; }
+.post-nav {
+  position: sticky; top: 0; background: rgba(10,10,10,0.88);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  padding: 20px var(--pad-x);
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  z-index: 10;
+}
+.post-close {
+  font-family: var(--ff-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--fg-2); display: flex; align-items: center; gap: 8px;
+  cursor: none; transition: color .2s;
+}
+.post-close:hover { color: var(--fg); }
+.post-nav-title { font-family: var(--ff-mono); font-size: 10px; color: var(--fg-3); letter-spacing: 0.06em; }
+
+.post-content {
+  padding: 80px var(--pad-x) 160px;
+  max-width: calc(var(--content-w) + var(--pad-x) * 2);
+}
+.post-header { margin-bottom: 64px; }
+.post-meta-top {
+  font-family: var(--ff-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--fg-3); margin-bottom: 24px;
+  display: flex; gap: 20px; align-items: center;
+}
+.post-meta-top .pm-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--fg-4); display: inline-block; }
+.post-heading {
+  font-family: var(--ff-display); font-weight: 400;
+  font-size: clamp(36px, 6vw, 72px); line-height: 1.0; letter-spacing: -0.035em;
+  margin: 0 0 28px; color: var(--fg);
+}
+.post-heading em { font-style: italic; }
+.post-lead {
+  font-size: 20px; line-height: 1.6; color: var(--fg-2); max-width: 52ch;
+  font-family: var(--ff-display); font-weight: 300; letter-spacing: -0.01em;
+}
+.post-lead em { color: var(--fg); font-style: italic; }
+.post-divider {
+  width: 40px; height: 1px; background: var(--line-2); margin: 48px 0;
+}
+
+/* prose */
+.prose { max-width: var(--content-w); }
+.prose p {
+  font-size: 18px; line-height: 1.7; color: var(--fg-2);
+  margin: 0 0 1.5em;
+}
+.prose p em { color: var(--fg); font-style: italic; }
+.prose p strong { color: var(--fg); font-weight: 500; }
+.prose h2 {
+  font-family: var(--ff-display); font-weight: 400; font-style: italic;
+  font-size: clamp(24px, 3vw, 36px); line-height: 1.15; letter-spacing: -0.025em;
+  color: var(--fg); margin: 2.5em 0 0.8em;
+}
+.prose blockquote {
+  margin: 2em 0;
+  padding: 0 0 0 24px;
+  border-left: 1px solid var(--accent);
+  font-family: var(--ff-display); font-style: italic; font-weight: 300;
+  font-size: 20px; line-height: 1.55; color: var(--fg); letter-spacing: -0.01em;
+}
+.prose code {
+  font-family: var(--ff-mono); font-size: 0.85em;
+  background: var(--bg-2); border: 1px solid var(--line-2);
+  padding: 2px 6px; border-radius: 2px; color: var(--fg-2);
+}
+.prose ul { padding: 0 0 0 0; list-style: none; margin: 0 0 1.5em; }
+.prose ul li {
+  font-size: 18px; line-height: 1.7; color: var(--fg-2);
+  padding: 4px 0 4px 20px; position: relative;
+}
+.prose ul li::before {
+  content: "–"; position: absolute; left: 0; color: var(--fg-3);
+  font-family: var(--ff-display); font-style: italic;
+}
+.prose hr { border: none; border-top: 1px solid var(--line); margin: 3em 0; }
+
+/* post footer */
+.post-footer {
+  max-width: var(--content-w);
+  margin-top: 80px; padding-top: 32px;
+  border-top: 1px solid var(--line);
+  font-family: var(--ff-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--fg-3);
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+.post-footer .pf-back { display: flex; align-items: center; gap: 8px; color: var(--fg-2); cursor: none; transition: color .2s; }
+.post-footer .pf-back:hover { color: var(--fg); }
+
+/* reading progress */
+.reading-bar {
+  position: fixed; top: 0; left: 0; height: 2px;
+  background: var(--accent); width: 0%;
+  z-index: 9999; pointer-events: none;
+  transition: width .1s linear;
+}
+
+/* footer */
+.site-footer {
+  padding: 28px var(--pad-x) 32px;
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-family: var(--ff-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--fg-3); border-top: 1px solid var(--line);
+}
+.site-footer em { color: var(--fg); font-style: italic; font-family: var(--ff-display); text-transform: none; letter-spacing: -0.01em; font-size: 13px; }
+.site-footer a:hover { color: var(--fg); }
+
+/* fade in */
+.fade-in { opacity: 0; transform: translateY(16px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1); }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" id="cursor" aria-hidden="true"></div>
+  <div class="reading-bar" id="reading-bar"></div>
+
+  <!-- Site nav -->
+  <nav class="site-nav">
+    <a href="index.html">Yuvraaj<span class="reg">®</span></a>
+    <a href="index.html" class="nav-back"><span class="arr">←</span> Back</a>
+  </nav>
+
+  <!-- Notes header -->
+  <header class="notes-header fade-in">
+    <div class="notes-eyebrow"><span class="dot"></span> Notes &amp; Writing</div>
+    <h1 class="notes-title">Notes.</h1>
+    <p class="notes-subtitle">Things I think about, written down. <em>No schedule.</em> No newsletter. Just words when they're ready.</p>
+  </header>
+
+  <!-- Featured post -->
+  <div class="notes-featured fade-in" style="transition-delay:.1s">
+    <div class="featured-label">Latest</div>
+    <a class="featured-card" href="#" data-post="post-1">
+      <div class="fc-tag">Essay &nbsp;·&nbsp; Apr 2026</div>
+      <h2 class="fc-title">On shipping things that <em>aren't finished</em></h2>
+      <p class="fc-excerpt">
+        There's a version of every project that's good enough to ship and a version that's perfect enough to never exist.
+        I've been thinking about what we lose <em>chasing the second one</em>.
+      </p>
+      <div class="fc-foot">
+        <span>5 min read</span>
+        <span class="fc-read">Read <span class="arr">→</span></span>
+      </div>
+    </a>
+  </div>
+
+  <!-- Index -->
+  <main class="notes-index">
+    <div class="index-year-group fade-in" style="transition-delay:.15s">
+      <div class="index-year">2026 <span class="yr-count">— 02 entries</span></div>
+
+      <a class="note-entry" href="#" data-post="post-1">
+        <span class="ne-date">Apr 12</span>
+        <div class="ne-body">
+          <div class="ne-title">On shipping things that <em>aren't finished</em></div>
+          <div class="ne-blurb">A short argument for the scrappy version.</div>
+        </div>
+        <span class="ne-tag">Essay</span>
+      </a>
+
+      <a class="note-entry" href="#" data-post="post-2">
+        <span class="ne-date">Feb 28</span>
+        <div class="ne-body">
+          <div class="ne-title">Why I stopped writing <em>clever code</em></div>
+          <div class="ne-blurb">Cleverness is a tax on the next person.</div>
+        </div>
+        <span class="ne-tag">Essay</span>
+      </a>
+    </div>
+
+    <div class="index-year-group fade-in" style="transition-delay:.2s">
+      <div class="index-year">2025 <span class="yr-count">— 03 entries</span></div>
+
+      <a class="note-entry" href="#" data-post="post-3">
+        <span class="ne-date">Dec 06</span>
+        <div class="ne-body">
+          <div class="ne-title">Three bad habits I broke <em>this year</em></div>
+          <div class="ne-blurb">And the one I'm keeping.</div>
+        </div>
+        <span class="ne-tag">Notes</span>
+      </a>
+
+      <a class="note-entry" href="#" data-post="post-4">
+        <span class="ne-date">Oct 19</span>
+        <div class="ne-body">
+          <div class="ne-title">The quiet joy of a <em>boring toolchain</em></div>
+          <div class="ne-blurb">Tools are the frame, not the painting.</div>
+        </div>
+        <span class="ne-tag">Essay</span>
+      </a>
+
+      <a class="note-entry" href="#" data-post="post-5">
+        <span class="ne-date">Jul 02</span>
+        <div class="ne-body">
+          <div class="ne-title">What I learned building with <em>LLMs for a year</em></div>
+          <div class="ne-blurb">A lot of it was unlearning.</div>
+        </div>
+        <span class="ne-tag">Longform</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- Site footer -->
+  <footer class="site-footer" style="margin-top:120px">
+    <span>© 2026 — <em>Yuvraaj</em>.</span>
+    <a href="index.html">← Portfolio</a>
+    <span>No tracking, no cookies.</span>
+  </footer>
+
+  <!-- Post overlay -->
+  <div class="post-view" id="post-view">
+    <div class="reading-bar" id="post-reading-bar"></div>
+    <nav class="post-nav">
+      <button class="post-close" id="post-close"><span>←</span> All Notes</button>
+      <span class="post-nav-title" id="post-nav-title"></span>
+    </nav>
+    <article class="post-content" id="post-content"></article>
+  </div>
+
+  <!-- Post data -->
+  <script>
+  const POSTS = {
+    "post-1": {
+      tag: "Essay",
+      date: "April 12, 2026",
+      readTime: "5 min",
+      title: "On shipping things that <em>aren't finished</em>",
+      lead: "There's a version of every project that's good enough to ship and a version that's perfect enough to never exist. I've been thinking about what we lose chasing the second one.",
+      body: `
+        <p>I shipped something last week that embarrassed me a little. The API had rough edges, the docs were half-written, and there was a feature I'd been meaning to add for three months. I shipped it anyway.</p>
+        <p>Within 48 hours, someone found a use case I hadn't considered. Within a week, two people had built things on top of it. Within a month, the feedback had reshaped what the product actually needed to be — not the thing I'd imagined in isolation, but something <em>genuinely more useful</em>.</p>
+        <blockquote>The version in your head is always better than the version in the world, until the world proves otherwise.</blockquote>
+        <p>I'm not arguing for sloppiness. I'm arguing against the particular kind of perfectionism that confuses <em>polish</em> with <em>readiness</em>. Polish is aesthetic. Readiness is whether the thing is useful to someone right now.</p>
+        <h2>The cost of waiting</h2>
+        <p>Every week a thing sits unreleased, you're paying a tax. You're paying it in momentum, in feedback, in the compounding interest of real-world use. You're also paying it in the slow, quiet death of enthusiasm — the project that felt exciting in January is a burden by June.</p>
+        <p>The scrappy version shipped is almost always worth more than the polished version dreamed about. Not because quality doesn't matter. Because <strong>unshipped quality helps no one.</strong></p>
+        <hr/>
+        <p>Ship the thing. Fix it after. The world will tell you what it needs.</p>
+      `
+    },
+    "post-2": {
+      tag: "Essay",
+      date: "February 28, 2026",
+      readTime: "4 min",
+      title: "Why I stopped writing <em>clever code</em>",
+      lead: "Cleverness is a tax on the next person. That person is usually you.",
+      body: `
+        <p>There's a particular pleasure in writing a clever piece of code. A one-liner that does what would normally take twelve. A pattern so elegant it feels like mathematics. I used to chase that feeling.</p>
+        <p>Then I spent an afternoon debugging a piece of "clever" code I'd written eight months prior. I had no memory of writing it. The logic was correct — I could verify that — but I couldn't <em>read</em> it. Not quickly. Not without effort.</p>
+        <blockquote>Clever code is a gift you give yourself at the expense of yourself later.</blockquote>
+        <h2>What I do instead</h2>
+        <p>I write the boring version first. The obvious variable names. The explicit conditionals. The loop that could be a reduce but isn't. I write it like I'm writing for someone who hasn't had coffee yet — because that person is usually me at 7am six months from now.</p>
+        <p>Clarity is not the enemy of performance. In most code I write, the bottleneck is never the thing I was trying to be clever about. It's the network. The database. The third-party API that takes 400ms for reasons I'll never understand.</p>
+        <p>Optimize for <em>reading</em>. Code is written once and read many times. The ratio matters.</p>
+        <hr/>
+        <p>The best code I've ever written is the code that a junior dev could understand without asking me. I'm still working toward that. But I stopped chasing cleverness, and that was a start.</p>
+      `
+    },
+    "post-3": {
+      tag: "Notes",
+      date: "December 6, 2025",
+      readTime: "3 min",
+      title: "Three bad habits I broke <em>this year</em>",
+      lead: "And the one I'm keeping.",
+      body: `
+        <p>End of year is a good time to audit. Here's what I stopped doing, what I kept, and the honest reasoning behind each.</p>
+        <h2>1. Starting things I knew I wouldn't finish</h2>
+        <p>I had a habit of spinning up projects during late-night sessions that felt urgent, brilliant, and obviously worth pursuing. I'd get three days in, the initial excitement would fade, and the project would join the graveyard. The cost wasn't just wasted time — it was the specific discouragement of accumulating unfinished things.</p>
+        <p>I made a rule: <em>nothing new until something ships.</em> It's blunt, but it works.</p>
+        <h2>2. Optimizing for the appearance of productivity</h2>
+        <p>Keeping meticulous task lists. Elaborate systems. The satisfying architecture of a workflow that didn't actually make me better at working — just better at appearing to be organized. I stripped it back to a single text file.</p>
+        <h2>3. Reading about things instead of doing them</h2>
+        <p>There's a comfortable loop where you read about a technology, feel vaguely informed, and delay building anything with it. It feels productive. It isn't. Reading is not a substitute for doing — it's a delay tactic dressed up as preparation.</p>
+        <h2>The one I kept</h2>
+        <p>Keeping a short daily log. Not a journal, not reflections — just three bullet points of what actually happened. It's become the most useful thing I do. The act of writing forces honesty about whether a day was real or imagined.</p>
+      `
+    },
+    "post-4": {
+      tag: "Essay",
+      date: "October 19, 2025",
+      readTime: "4 min",
+      title: "The quiet joy of a <em>boring toolchain</em>",
+      lead: "Tools are the frame, not the painting.",
+      body: `
+        <p>Every few months, a new tool arrives that promises to change the way you work. It's faster. It's cleaner. It integrates with everything. The community is excited. The benchmarks are impressive. Someone on Twitter is calling it a paradigm shift.</p>
+        <p>I've learned to be suspicious of this feeling.</p>
+        <p>The tools I've gotten the most out of are the ones I stopped thinking about. The text editor I've used for three years. The deployment pipeline I set up once and have never touched. The database that does exactly what databases are supposed to do.</p>
+        <blockquote>A boring tool is a tool you've already won the argument with.</blockquote>
+        <h2>The switching cost is never just time</h2>
+        <p>Every time you switch tools, you pay with attention. You spend hours on configuration that used to be invisible. You develop new muscle memory for a workflow that was already habitual. You introduce small, strange bugs that take days to understand.</p>
+        <p>Sometimes this is worth it. Often it isn't. The new thing is rarely <em>so much better</em> that it justifies the cost of the transition — and more importantly, the cost of the months before the new thing becomes as invisible as the old thing was.</p>
+        <h2>What I optimize for instead</h2>
+        <p>I look for tools with staying power. Not the most exciting option — the most stable one. The one where the documentation hasn't changed in a year because the API hasn't needed to. The one where questions on Stack Overflow are five years old and still correct.</p>
+        <p>Boring, in tooling, is almost always a compliment.</p>
+      `
+    },
+    "post-5": {
+      tag: "Longform",
+      date: "July 2, 2025",
+      readTime: "9 min",
+      title: "What I learned building with <em>LLMs for a year</em>",
+      lead: "A lot of it was unlearning.",
+      body: `
+        <p>I spent the better part of last year building things with language models — some for work, some for myself, some just to understand what they were actually capable of. This is an attempt to write down what I actually learned, as opposed to what I expected to learn.</p>
+        <h2>They're not search engines</h2>
+        <p>The first mistake most people make is treating LLMs like a better search engine. You ask a question, you expect a correct answer. This framing sets you up for frustration, because they're not trying to retrieve facts — they're trying to produce <em>plausible continuations</em>. Those are very different things.</p>
+        <p>Once I stopped thinking "is this correct" and started thinking "is this useful as a starting point," they became dramatically more valuable.</p>
+        <h2>The context window is the whole game</h2>
+        <p>The quality of output is almost entirely determined by the quality of the context you provide. This is not a small insight — it reshaped how I think about prompting entirely. Bad outputs are almost always a context problem, not a model problem. More signal, less noise, explicit framing.</p>
+        <blockquote>You get back approximately what you put in. The model is a mirror with opinions.</blockquote>
+        <h2>They're bad at knowing what they don't know</h2>
+        <p>This is the dangerous one. A model that says "I'm not sure" is easy to work with. A model that's confidently wrong in a way that sounds authoritative is a liability. The failure mode isn't stupidity — it's <em>confident wrongness</em>. You have to build verification into your workflow, not as an afterthought but as a core constraint.</p>
+        <h2>The unlearning</h2>
+        <p>Most of what I had to unlearn was about what "working" means. I kept expecting the model to behave like a junior developer who understood context, remembered previous conversations, and would flag uncertainty. It doesn't do any of these things reliably. Once I stopped expecting that and started working with what it actually was, the collaboration became more honest — and more useful.</p>
+        <hr/>
+        <p>I'm still building with them. I'm more skeptical than I was, and also more capable with them than I was. Those two things turned out to be related.</p>
+      `
+    }
+  };
+
+  // ─── cursor ────────────────────────────────────────────────────────────────
+  const cursor = document.getElementById("cursor");
+  if (window.matchMedia("(min-width: 901px)").matches) {
+    let cx = window.innerWidth/2, cy = window.innerHeight/2, tx = cx, ty = cy;
+    window.addEventListener("mousemove", e => { tx = e.clientX; ty = e.clientY; });
+    const loop = () => {
+      cx += (tx-cx)*0.25; cy += (ty-cy)*0.25;
+      cursor.style.transform = `translate3d(${cx}px, ${cy}px, 0) translate(-50%, -50%)`;
+      requestAnimationFrame(loop);
+    };
+    loop();
+    document.addEventListener("mouseover", e => {
+      const t = e.target.closest("a, button, .note-entry, .featured-card");
+      cursor.classList.remove("hover","text");
+      if (t) cursor.classList.add("hover");
+    });
+  }
+
+  // ─── fade in on scroll ─────────────────────────────────────────────────────
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("visible"); io.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll(".fade-in").forEach(el => io.observe(el));
+
+  // ─── post overlay ──────────────────────────────────────────────────────────
+  const postView = document.getElementById("post-view");
+  const postContent = document.getElementById("post-content");
+  const postClose = document.getElementById("post-close");
+  const postNavTitle = document.getElementById("post-nav-title");
+  const readingBar = document.getElementById("post-reading-bar");
+
+  function openPost(id) {
+    const p = POSTS[id];
+    if (!p) return;
+    postNavTitle.textContent = p.tag + " · " + p.date;
+    postContent.innerHTML = `
+      <header class="post-header">
+        <div class="post-meta-top">
+          <span>${p.tag}</span>
+          <span class="pm-dot"></span>
+          <span>${p.date}</span>
+          <span class="pm-dot"></span>
+          <span>${p.readTime} read</span>
+        </div>
+        <h1 class="post-heading">${p.title}</h1>
+        <p class="post-lead">${p.lead}</p>
+      </header>
+      <div class="post-divider"></div>
+      <div class="prose">${p.body}</div>
+      <footer class="post-footer">
+        <span class="pf-back" id="pf-back-btn">← All Notes</span>
+        <span>${p.date}</span>
+      </footer>
+    `;
+    postView.style.display = "block";
+    requestAnimationFrame(() => { postView.classList.add("open"); postView.scrollTop = 0; });
+    document.body.style.overflow = "hidden";
+    document.getElementById("pf-back-btn").addEventListener("click", closePost);
+  }
+
+  function closePost() {
+    postView.classList.remove("open");
+    setTimeout(() => { postView.style.display = "none"; }, 500);
+    document.body.style.overflow = "";
+  }
+
+  postClose.addEventListener("click", closePost);
+  document.querySelectorAll("[data-post]").forEach(el => {
+    el.addEventListener("click", e => { e.preventDefault(); openPost(el.getAttribute("data-post")); });
+  });
+
+  // reading progress
+  postView.addEventListener("scroll", () => {
+    const max = postView.scrollHeight - postView.clientHeight;
+    readingBar.style.width = (postView.scrollTop / max * 100) + "%";
+  });
+
+  // esc to close
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closePost(); });
+  </script>
+</body>
+</html>
